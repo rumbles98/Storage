@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Unggah Foto dan Tentukan Ukurannya</title>
+  <style>
+    .upload-form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    .upload-form label {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="upload-form">
+    <h2>Unggah Foto</h2>
+    <input type="file" id="photo-input" accept="image/*">
+    <label for="width-input">Lebar (px):</label>
+    <input type="number" id="width-input">
+    <label for="height-input">Tinggi (px):</label>
+    <input type="number" id="height-input">
+    <button id="upload-btn">Unggah</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function uploadPhoto() {
+      var photoInput = document.getElementById('photo-input');
+      var widthInput = document.getElementById('width-input');
+      var heightInput = document.getElementById('height-input');
+      var resultDiv = document.getElementById('result');
+
+      var file = photoInput.files[0];
+      if (file) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var img = new Image();
+          img.onload = function() {
+            var canvas = document.createElement('canvas');
+            var ctx = canvas.getContext('2d');
+
+            var width = parseInt(widthInput.value);
+            var height = parseInt(heightInput.value);
+
+            canvas.width = width;
+            canvas.height = height;
+
+            ctx.drawImage(img, 0, 0, width, height);
+
+            var resizedDataUrl = canvas.toDataURL(file.type);
+
+            resultDiv.innerHTML = '<img src="' + resizedDataUrl + '">';
+
+            // Di sini Anda dapat melakukan apa pun dengan data gambar yang diubah ukurannya,
+            // seperti mengirimnya ke server menggunakan AJAX atau menyimpannya ke penyimpanan lokal.
+
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    var uploadBtn = document.getElementById('upload-btn');
+    uploadBtn.addEventListener('click', uploadPhoto);
+  </script>
+</body>
+</html>
